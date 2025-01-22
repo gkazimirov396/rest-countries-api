@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import axios from 'axios';
+import ky from 'ky';
 import { Link, useLoaderData, useSearchParams } from 'react-router';
 
 import LoaderElement from '~/components/LoaderElement';
@@ -19,13 +19,15 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export async function clientLoader({}: Route.ClientLoaderArgs) {
-  const res = await axios.get<Country[]>('https://restcountries.com/v3.1/all', {
-    params: {
-      fields: 'name,population,region,cca3',
-    },
-  });
+  const data = await ky
+    .get('https://restcountries.com/v3.1/all', {
+      searchParams: {
+        fields: 'name,population,region,cca3',
+      },
+    })
+    .json<Country[]>();
 
-  return res.data;
+  return data;
 }
 
 export function HydrateFallback() {

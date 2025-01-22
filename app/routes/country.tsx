@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { useLoaderData } from 'react-router';
+import ky from 'ky';
 
 import LoaderElement from '~/components/LoaderElement';
 
@@ -16,17 +15,14 @@ export function meta({ params }: Route.MetaArgs) {
 export async function clientLoader({ params }: Route.LoaderArgs) {
   const countryName = params.countryName;
 
-  const res = await axios.get<Country[]>(
-    `https://restcountries.com/v3.1/name/${countryName}`,
-    {
-      params: {
+  const data = await ky
+    .get(`https://restcountries.com/v3.1/name/${countryName}`, {
+      searchParams: {
         fields: 'name,capital,population,region,subregion,flags',
         fullText: true,
       },
-    }
-  );
-
-  const data = res.data;
+    })
+    .json<Country[]>();
 
   return {
     name: data[0]?.name?.common || 'N/A',
@@ -43,8 +39,8 @@ export function HydrateFallback() {
   return <LoaderElement />;
 }
 
-export default function Country({}: Route.ComponentProps) {
-  const country = useLoaderData<typeof clientLoader>();
+export default function Country({ loaderData }: Route.ComponentProps) {
+  const country = loaderData;
 
   return (
     <section className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
