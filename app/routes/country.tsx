@@ -1,4 +1,4 @@
-import ky from 'ky';
+import ky from '~/lib/ky';
 
 import LoaderElement from '~/components/LoaderElement';
 
@@ -16,7 +16,7 @@ export async function clientLoader({ params }: Route.LoaderArgs) {
   const countryName = params.countryName;
 
   const data = await ky
-    .get(`https://restcountries.com/v3.1/name/${countryName}`, {
+    .get(`/name/${countryName}`, {
       searchParams: {
         fields: 'name,capital,population,region,subregion,flags',
         fullText: true,

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import ky from 'ky';
+import ky from '~/lib/ky';
 import { Link, useLoaderData, useSearchParams } from 'react-router';
 
 import LoaderElement from '~/components/LoaderElement';
@@ -20,7 +20,7 @@ export function meta({}: Route.MetaArgs) {
 
 export async function clientLoader({}: Route.ClientLoaderArgs) {
   const data = await ky
-    .get('https://restcountries.com/v3.1/all', {
+    .get('/all', {
       searchParams: {
         fields: 'name,population,region,cca3',
       },
